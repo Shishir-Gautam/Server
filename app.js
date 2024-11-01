@@ -12,11 +12,7 @@ const app = express();
 // Use Helmet for security
 app.use(helmet());
 
-app.use(cors(
-    {
-        origin: "http://localhost:3001/",
-    }
-));
+app.use(cors());
 app.use(express.json());
 
 // Use the movie routes
