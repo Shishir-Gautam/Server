@@ -49,21 +49,6 @@ const getUpcomingMovies = async (req, res) => {
     }
 };
 
-// Get trending movies
-const getTrendingMovies = async (req, res) => {
-    try {
-        const response = await axios.get('https://api.themoviedb.org/3/trending/movie/day', {
-            headers: {
-                Authorization: `Bearer ${TMDB_BEARER_TOKEN}`
-            }
-        });
-        res.json(response.data); // Send the trending movies data as a response
-    } catch (error) {
-        console.error('Error fetching trending movies:', error.response?.data || error.message);
-        res.status(500).json({ error: 'Failed to fetch trending movies.' });
-    }
-};
-
 // Get movie genres
 const getGenres = async (req, res) => {
     try {
@@ -100,7 +85,7 @@ const searchMovies = async (req, res) => {
 
 // Get movie details
 const getMovieDetails = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; // Movie ID from the URL
     try {
         const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}`, {
             headers: {
@@ -114,16 +99,16 @@ const getMovieDetails = async (req, res) => {
     }
 };
 
-// Get movies by genre
 const getMoviesByGenre = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; // Use 'id' from the route parameter
     try {
         const response = await axios.get('https://api.themoviedb.org/3/discover/movie', {
             params: {
-                with_genres: id
+                with_genres: id, // Pass the genre ID directly
+                api_key: process.env.TMDB_API_KEY // Use your API key
             },
             headers: {
-                Authorization: `Bearer ${TMDB_BEARER_TOKEN}`
+                Authorization: `Bearer ${TMDB_BEARER_TOKEN}` // Ensure bearer token is used
             }
         });
         res.json(response.data);
@@ -132,14 +117,29 @@ const getMoviesByGenre = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch movies by genre.' });
     }
 };
+const getTrendingMovies = async (req, res) => {
+    try {
+        const response = await axios.get(`https://api.themoviedb.org/3/trending/movie/week`, {
+            headers: {
+                Authorization: `Bearer ${TMDB_BEARER_TOKEN}`
+            }
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching trending movies:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to fetch trending movies.' });
+    }
+};
+
+
 
 module.exports = {
     getPopularMovies,
     getTopRatedMovies,
     getUpcomingMovies,
-    getTrendingMovies, // Export the new function
     getGenres,
     searchMovies,
     getMovieDetails,
-    getMoviesByGenre
+    getMoviesByGenre, // Function to fetch movies by genre
+    getTrendingMovies,
 };

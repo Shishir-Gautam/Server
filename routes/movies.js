@@ -19,9 +19,8 @@ router.get('/search/:query', moviesController.searchMovies); // Route for search
 
 // Get movies by genre using the genre ID from the URL
 router.get('/genre/:id', moviesController.getMoviesByGenre); 
-
-// Get trending movies
-router.get('/trending', moviesController.getTrendingMovies); // New route for trending movies
+//trending
+router.get('/trending', moviesController.getTrendingMovies);
 
 
 module.exports = router;
