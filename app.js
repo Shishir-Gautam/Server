@@ -2,29 +2,28 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const helmet = require('helmet'); // Import Helmet
-const movieRoutes = require('./routes/movies'); // Ensure this path is correct
+const helmet = require('helmet'); // Import Helmet for security
+const movieRoutes = require('./routes/movies'); // Import movie routes
 
-dotenv.config();
+dotenv.config(); // Load environment variables
 
 const app = express();
 
-// Use Helmet for security
-app.use(helmet());
+// Middleware setup
+app.use(helmet()); // Protect against vulnerabilities
+app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(express.json()); // Parse JSON requests
 
-app.use(cors());
-app.use(express.json());
-
-// Use the movie routes
+// Use movie-related routes
 app.use('/api/movies', movieRoutes);
 
+// Log each request to the console
 app.use((req, res, next) => {
     console.log(`${req.method} request for '${req.url}'`);
     next();
 });
 
-
-// Start server
+// Start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

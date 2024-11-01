@@ -9,12 +9,12 @@ const getPopularMovies = async (req, res) => {
     try {
         const response = await axios.get(`${TMDB_API_BASE_URL}/popular`, {
             headers: {
-                Authorization: `Bearer ${TMDB_BEARER_TOKEN}` // Use bearer token for authorization
+                Authorization: `Bearer ${TMDB_BEARER_TOKEN}`
             }
         });
         res.json(response.data);
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching popular movies:', error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to fetch popular movies.' });
     }
 };
@@ -29,7 +29,7 @@ const getTopRatedMovies = async (req, res) => {
         });
         res.json(response.data);
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching top-rated movies:', error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to fetch top-rated movies.' });
     }
 };
@@ -44,7 +44,7 @@ const getUpcomingMovies = async (req, res) => {
         });
         res.json(response.data);
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching upcoming movies:', error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to fetch upcoming movies.' });
     }
 };
@@ -59,7 +59,7 @@ const getGenres = async (req, res) => {
         });
         res.json(response.data);
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching genres:', error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to fetch genres.' });
     }
 };
@@ -70,7 +70,6 @@ const searchMovies = async (req, res) => {
     try {
         const response = await axios.get(`https://api.themoviedb.org/3/search/movie`, {
             params: {
-                api_key: process.env.TMDB_API_KEY,
                 query: encodeURIComponent(query)
             },
             headers: {
@@ -79,15 +78,14 @@ const searchMovies = async (req, res) => {
         });
         res.json(response.data);
     } catch (error) {
-        console.error('Error fetching movies:', error.response?.data || error.message);
+        console.error('Error searching movies:', error.response?.data || error.message);
         res.status(error.response?.status || 500).json({ error: 'Failed to search movies. Please try again.' });
     }
 };
 
-
 // Get movie details
 const getMovieDetails = async (req, res) => {
-    const { id } = req.params; // Assuming you want the movie ID from the URL
+    const { id } = req.params; // Movie ID from the URL
     try {
         const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}`, {
             headers: {
@@ -96,29 +94,30 @@ const getMovieDetails = async (req, res) => {
         });
         res.json(response.data);
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching movie details:', error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to fetch movie details.' });
     }
 };
 
-// Get movies by genre
 const getMoviesByGenre = async (req, res) => {
-    const { id } = req.params; // Genre ID from the URL
+    const { id } = req.params; // Use 'id' from the route parameter
     try {
-        const response = await axios.get(`${TMDB_API_BASE_URL}/discover/movie`, {
+        const response = await axios.get('https://api.themoviedb.org/3/discover/movie', {
             params: {
-                with_genres: id, // Use genre ID to filter
+                with_genres: id, // Pass the genre ID directly
+                api_key: process.env.TMDB_API_KEY // Use your API key
             },
             headers: {
-                Authorization: `Bearer ${TMDB_BEARER_TOKEN}`
+                Authorization: `Bearer ${TMDB_BEARER_TOKEN}` // Ensure bearer token is used
             }
         });
         res.json(response.data);
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching movies by genre:', error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Failed to fetch movies by genre.' });
     }
 };
+
 
 module.exports = {
     getPopularMovies,
@@ -127,5 +126,5 @@ module.exports = {
     getGenres,
     searchMovies,
     getMovieDetails,
-    getMoviesByGenre // New function to fetch movies by genre
+    getMoviesByGenre // Function to fetch movies by genre
 };
