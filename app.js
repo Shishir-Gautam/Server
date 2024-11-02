@@ -11,7 +11,9 @@ const app = express();
 
 // Middleware setup
 app.use(helmet()); // Protect against vulnerabilities
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(cors({
+    origin: 'https://movies-recommendation-00bm.onrender.com/' // Allow only this origin
+})); 
 app.use(express.json()); // Parse JSON requests
 
 // Use movie-related routes
